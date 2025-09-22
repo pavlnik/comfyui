@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI : Generate</title>
+    <link rel="shortcut icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADXUlEQVRogcWazWucRRzHP7sNYodCUtNDsNAiKBo8qSA9tNXGthEFi4G9eCk44NBzDyI9pP9BeyiFOUwLPYkHUyiYppRSmhxiRE+xrXjwLdSL+FLNgJrsenh2zbNPnmefZ16ezQfCMvM8v+98fzvPzDwzm0an06EOpLLjwGlgEtgEeg01Cj4H8QTwN2CMFivpC406EpDKtoBrwJPRxWHGaDHXKzRjq0tlZ4FPqMc8wMV0IWoCUtkp4HxMzRzG04XYPfBhZL1SoiUglZ0ATsTSG8ByuhCzB45TbUYJZT5diJnAWxG1BrGQLsRM4LWIWkXcN1qspiuiJCCVfRV4OoZWCQvZihGXaKnsGMmq2O5W/Wu0+AM4G2ytGvPZikorsVT2HHCG5Ftus5VAB9jV/aubv4AJo8V6unJgD0hl9wErwDOp6mEZznIjax7Kx8AS/eZ3ijZwLu9CYQLdx+b5uhw5csxo8V3ehUE90KrJjAvXgQNGi3tFN+QOYqnsC8CDgIZ/At4D1gGRc73D1v6gk6lvdD+/NVr8WtZQ0SCermw1n0tGi6VAjUoUPUKhrwXbFpy62PYISWWfAn4mWbB8eGi0mAw1VpW8Hngdf/MwxG8f8hOYCtTcttzXSV4CIQP4T2AxIN6ZvgSksi8DzwboLRotbJglN7I98Gag3meB8c5kEwidPm8Fxjvz/zQqld0PrAVofWW0eCWKKwfSPXA0UOtmYLwX6QROBmoNdfrsESuBX8ic1wyLJoBU9ghhm/IvjRYbcSy50Xj/g/Vxkk35RwE6vwGngB+A0WwbFB94NUjeiB8ZLR75NDxCcqIWOv/vBQo3HVWQys4BLaPFpktcEzgMvBTSeCTeBS64BjWBDfp3RTvJO64BTeBj4NP4Xrxol9/ST9No8TnJ/nWu7OYh4LwNHQEwWvwDzEhl95AMyN5A+h14DrgLjMVwWMJt14CqR4t3gGM+jhw5aLT40SWg9HRaKjsKHPK2VJ1lV/NQ7Xh9Ctjt7scZr3epKgm84SPsQW0JhG7yq/C90eILn8CBCUhlXyT5V4G68d6KlvXAhK+wI5d9A8sS+MZX2AFptPjaN3hgAkaLNWDWV7yEx8C00eJKiEjVhawFvN0tDtq4FB2Z98q9n6ZWgatGi8fVrebzH9lPzH8zHY1VAAAAAElFTkSuQmCC" type="image/x-icon">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div id="alertBox" class="alert hidden"></div>
+
+    <header class="header">
+        <div class="header-container">
+            <a href="../" class="logo">
+                <img src="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADXUlEQVRogcWazWucRRzHP7sNYodCUtNDsNAiKBo8qSA9tNXGthEFi4G9eCk44NBzDyI9pP9BeyiFOUwLPYkHUyiYppRSmhxiRE+xrXjwLdSL+FLNgJrsenh2zbNPnmefZ16ezQfCMvM8v+98fzvPzDwzm0an06EOpLLjwGlgEtgEeg01Cj4H8QTwN2CMFivpC406EpDKtoBrwJPRxWHGaDHXKzRjq0tlZ4FPqMc8wMV0IWoCUtkp4HxMzRzG04XYPfBhZL1SoiUglZ0ATsTSG8ByuhCzB45TbUYJZT5diJnAWxG1BrGQLsRM4LWIWkXcN1qspiuiJCCVfRV4OoZWCQvZihGXaKnsGMmq2O5W/Wu0+AM4G2ytGvPZikorsVT2HHCG5Ftus5VAB9jV/aubv4AJo8V6unJgD0hl9wErwDOp6mEZznIjax7Kx8AS/eZ3ijZwLu9CYQLdx+b5uhw5csxo8V3ehUE90KrJjAvXgQNGi3tFN+QOYqnsC8CDgIZ/At4D1gGRc73D1v6gk6lvdD+/NVr8WtZQ0SCermw1n0tGi6VAjUoUPUKhrwXbFpy62PYISWWfAn4mWbB8eGi0mAw1VpW8Hngdf/MwxG8f8hOYCtTcttzXSV4CIQP4T2AxIN6ZvgSksi8DzwboLRotbJglN7I98Gag3meB8c5kEwidPm8Fxjvz/zQqld0PrAVofWW0eCWKKwfSPXA0UOtmYLwX6QROBmoNdfrsESuBX8ic1wyLJoBU9ghhm/IvjRYbcSy50Xj/g/Vxkk35RwE6vwGngB+A0WwbFB94NUjeiB8ZLR75NDxCcqIWOv/vBQo3HVWQys4BLaPFpktcEzgMvBTSeCTeBS64BjWBDfp3RTvJO64BTeBj4NP4Xrxol9/ST9No8TnJ/nWu7OYh4LwNHQEwWvwDzEhl95AMyN5A+h14DrgLjMVwWMJt14CqR4t3gGM+jhw5aLT40SWg9HRaKjsKHPK2VJ1lV/NQ7Xh9Ctjt7scZr3epKgm84SPsQW0JhG7yq/C90eILn8CBCUhlXyT5V4G68d6KlvXAhK+wI5d9A8sS+MZX2AFptPjaN3hgAkaLNWDWV7yEx8C00eJKiEjVhawFvN0tDtq4FB2Z98q9n6ZWgatGi8fVrebzH9lPzH8zHY1VAAAAAElFTkSuQmCC" alt="ComfyUI Logo">
+                <span>ComfyUI</span>
+            </a>
+            <nav class="nav">
+                <a href="../" class="nav-link">Главная</a>
+                <a href="" class="nav-link-selected">Генерация</a>
+                <a href="../upscale/" class="nav-link">Улучшение</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div>
+                <div class="card fade-in">
+                    <h1>Генерация</h1>
+                    <p>Интерфейс для генерации изображений через ComfyUI API.<br>Подключитесь к вашему серверу и генерируйте изображения.</p>
+
+                    <div class="form-group">
+                        <label for="apiUrl">Адрес сервера ComfyUI</label>
+                        <input type="text" id="apiUrl" placeholder="http://127.0.0.1:8188" value="http://127.0.0.1:8188">
+                    </div>
+
+                    <button id="btnConnect">Подключиться к серверу</button>
+
+                    <div id="connectionStatus" class="status-text">Статус: не подключено</div>
+                </div>
+
+                <div id="modelSection" class="card hidden fade-in">
+                    <h1>Выбор модели</h1>
+                    
+                    <div class="form-group">
+                        <label for="modelSelect">Выберите модель:</label>
+                        <select id="modelSelect"></select>
+                    </div>
+                </div>
+
+                <div id="paramsCard" class="card hidden fade-in">
+                    <h1>Параметры генерации</h1>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="basic">Основные</div>
+                        <div class="tab" data-tab="advanced">Дополнительные</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="tab-basic">
+                        <div class="form-group">
+                            <label for="positivePrompt">Позитивный промт:</label>
+                            <textarea id="positivePrompt" placeholder="Описание желаемого изображения..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="negativePrompt">Негативный промт:</label>
+                            <textarea id="negativePrompt" placeholder="Что исключить из изображения..."></textarea>
+                        </div>
+
+                        <div class="flex-row">
+                            <div class="form-group">
+                                <label for="width">Ширина:</label>
+                                <input type="number" id="width" value="512" min="64" max="2048">
+                            </div>
+                            <div class="form-group">
+                                <label for="height">Высота:</label>
+                                <input type="number" id="height" value="512" min="64" max="2048">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tab-advanced">
+                        <div class="form-group">
+                            <label for="steps">Шаги (steps):</label>
+                            <input type="number" id="steps" value="20" min="1" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cfg">CFG Scale:</label>
+                            <input type="number" id="cfg" value="7.5" step="0.1" min="1" max="20">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="samplerSelect">Сэмплер:</label>
+                            <select id="samplerSelect"></select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="schedulerSelect">Планировщик:</label>
+                            <select id="schedulerSelect"></select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="randomSeed" checked>
+                                <label for="randomSeed">Случайный сид</label>
+                            </div>
+                            <label for="seed">Сид (seed):</label>
+                            <input type="number" id="seed" value="-1" disabled>
+                        </div>
+                    </div>
+
+                    <button id="btnGenerate">Генерировать</button>
+
+                    <div id="progressSection" class="hidden">
+                        <div class="status-text">Статус: <span id="statusText">Ожидание...</span></div>
+                        <div id="progressBar">
+                            <div id="progressBarFill"></div>
+                        </div>
+                        <button id="btnCancel" class="secondary">Отменить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card fade-in">
+                    <h1>Результат</h1>
+                    <div id="resultSection">
+                        <p class="status-text">Изображение появится здесь после генерации.</p>
+                        <img id="imageResult" class="hidden">
+                    </div>
+                </div>
+                
+                <div id="historySection" class="card hidden fade-in">
+                    <div style="position: relative;">
+                        <h1>История генераций</h1>
+                        <button id="clearHistoryBtn" class="history-clear-btn" title="Очистить историю">&times;</button>
+                    </div>
+                    <div id="historyList" class="history-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="paramsModal" class="modal">
+            <div class="modal-content">
+                <h1>Параметры генерации</h1>
+                <button class="modal-close">&times;</button>
+                <div id="modalParamsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 GKOZ</p>
+        <p class="disclaimer">Этот сайт является фронтенд-интерфейсом для работы с API ComfyUI и не связан с официальными разработчиками ComfyUI.<br>Все права на исходную технологию принадлежат их правообладателям.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="../script.js"></script>
+</body>
+</html>

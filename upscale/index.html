@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyUI : Upscale</title>
+    <link rel="shortcut icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADXUlEQVRogcWazWucRRzHP7sNYodCUtNDsNAiKBo8qSA9tNXGthEFi4G9eCk44NBzDyI9pP9BeyiFOUwLPYkHUyiYppRSmhxiRE+xrXjwLdSL+FLNgJrsenh2zbNPnmefZ16ezQfCMvM8v+98fzvPzDwzm0an06EOpLLjwGlgEtgEeg01Cj4H8QTwN2CMFivpC406EpDKtoBrwJPRxWHGaDHXKzRjq0tlZ4FPqMc8wMV0IWoCUtkp4HxMzRzG04XYPfBhZL1SoiUglZ0ATsTSG8ByuhCzB45TbUYJZT5diJnAWxG1BrGQLsRM4LWIWkXcN1qspiuiJCCVfRV4OoZWCQvZihGXaKnsGMmq2O5W/Wu0+AM4G2ytGvPZikorsVT2HHCG5Ftus5VAB9jV/aubv4AJo8V6unJgD0hl9wErwDOp6mEZznIjax7Kx8AS/eZ3ijZwLu9CYQLdx+b5uhw5csxo8V3ehUE90KrJjAvXgQNGi3tFN+QOYqnsC8CDgIZ/At4D1gGRc73D1v6gk6lvdD+/NVr8WtZQ0SCermw1n0tGi6VAjUoUPUKhrwXbFpy62PYISWWfAn4mWbB8eGi0mAw1VpW8Hngdf/MwxG8f8hOYCtTcttzXSV4CIQP4T2AxIN6ZvgSksi8DzwboLRotbJglN7I98Gag3meB8c5kEwidPm8Fxjvz/zQqld0PrAVofWW0eCWKKwfSPXA0UOtmYLwX6QROBmoNdfrsESuBX8ic1wyLJoBU9ghhm/IvjRYbcSy50Xj/g/Vxkk35RwE6vwGngB+A0WwbFB94NUjeiB8ZLR75NDxCcqIWOv/vBQo3HVWQys4BLaPFpktcEzgMvBTSeCTeBS64BjWBDfp3RTvJO64BTeBj4NP4Xrxol9/ST9No8TnJ/nWu7OYh4LwNHQEwWvwDzEhl95AMyN5A+h14DrgLjMVwWMJt14CqR4t3gGM+jhw5aLT40SWg9HRaKjsKHPK2VJ1lV/NQ7Xh9Ctjt7scZr3epKgm84SPsQW0JhG7yq/C90eILn8CBCUhlXyT5V4G68d6KlvXAhK+wI5d9A8sS+MZX2AFptPjaN3hgAkaLNWDWV7yEx8C00eJKiEjVhawFvN0tDtq4FB2Z98q9n6ZWgatGi8fVrebzH9lPzH8zHY1VAAAAAElFTkSuQmCC" type="image/x-icon">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div id="alertBox" class="alert hidden"></div>
+
+    <header class="header">
+        <div class="header-container">
+            <a href="../" class="logo">
+                <img src="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADXUlEQVRogcWazWucRRzHP7sNYodCUtNDsNAiKBo8qSA9tNXGthEFi4G9eCk44NBzDyI9pP9BeyiFOUwLPYkHUyiYppRSmhxiRE+xrXjwLdSL+FLNgJrsenh2zbNPnmefZ16ezQfCMvM8v+98fzvPzDwzm0an06EOpLLjwGlgEtgEeg01Cj4H8QTwN2CMFivpC406EpDKtoBrwJPRxWHGaDHXKzRjq0tlZ4FPqMc8wMV0IWoCUtkp4HxMzRzG04XYPfBhZL1SoiUglZ0ATsTSG8ByuhCzB45TbUYJZT5diJnAWxG1BrGQLsRM4LWIWkXcN1qspiuiJCCVfRV4OoZWCQvZihGXaKnsGMmq2O5W/Wu0+AM4G2ytGvPZikorsVT2HHCG5Ftus5VAB9jV/aubv4AJo8V6unJgD0hl9wErwDOp6mEZznIjax7Kx8AS/eZ3ijZwLu9CYQLdx+b5uhw5csxo8V3ehUE90KrJjAvXgQNGi3tFN+QOYqnsC8CDgIZ/At4D1gGRc73D1v6gk6lvdD+/NVr8WtZQ0SCermw1n0tGi6VAjUoUPUKhrwXbFpy62PYISWWfAn4mWbB8eGi0mAw1VpW8Hngdf/MwxG8f8hOYCtTcttzXSV4CIQP4T2AxIN6ZvgSksi8DzwboLRotbJglN7I98Gag3meB8c5kEwidPm8Fxjvz/zQqld0PrAVofWW0eCWKKwfSPXA0UOtmYLwX6QROBmoNdfrsESuBX8ic1wyLJoBU9ghhm/IvjRYbcSy50Xj/g/Vxkk35RwE6vwGngB+A0WwbFB94NUjeiB8ZLR75NDxCcqIWOv/vBQo3HVWQys4BLaPFpktcEzgMvBTSeCTeBS64BjWBDfp3RTvJO64BTeBj4NP4Xrxol9/ST9No8TnJ/nWu7OYh4LwNHQEwWvwDzEhl95AMyN5A+h14DrgLjMVwWMJt14CqR4t3gGM+jhw5aLT40SWg9HRaKjsKHPK2VJ1lV/NQ7Xh9Ctjt7scZr3epKgm84SPsQW0JhG7yq/C90eILn8CBCUhlXyT5V4G68d6KlvXAhK+wI5d9A8sS+MZX2AFptPjaN3hgAkaLNWDWV7yEx8C00eJKiEjVhawFvN0tDtq4FB2Z98q9n6ZWgatGi8fVrebzH9lPzH8zHY1VAAAAAElFTkSuQmCC" alt="ComfyUI Logo">
+                <span>ComfyUI</span>
+            </a>
+            <nav class="nav">
+                <a href="../" class="nav-link">Главная</a>
+                <a href="../generate/" class="nav-link">Генерация</a>
+                <a href="" class="nav-link-selected">Улучшение</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div>
+                <div class="card fade-in">
+                    <h1>Улучшение</h1>
+                    <p>Интерфейс для апскейла изображений через ComfyUI API.<br>Подключитесь к вашему серверу и улучшайте изображения.</p>
+
+                    <div class="form-group">
+                        <label for="apiUrl">Адрес сервера ComfyUI</label>
+                        <input type="text" id="apiUrl" placeholder="http://127.0.0.1:8188" value="http://127.0.0.1:8188">
+                    </div>
+
+                    <button id="btnConnect">Подключиться к серверу</button>
+
+                    <div id="connectionStatus" class="status-text">Статус: не подключено</div>
+                </div>
+
+                <div id="modelSection" class="card hidden fade-in">
+                    <h1>Выбор модели</h1>
+                    
+                    <div class="form-group">
+                        <label for="modelSelect">Выберите модель:</label>
+                        <select id="modelSelect"></select>
+                    </div>
+                </div>
+
+                <div id="paramsCard" class="card hidden fade-in">
+                    <h1>Параметры апскейла</h1>
+                    
+                    <div id="uploadSection">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">📁</div>
+                            <p>Перетащите изображение сюда или кликните для выбора</p>
+                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <img id="imagePreview" class="image-preview">
+                        
+                        <!-- Добавленная секция для загрузки по URL -->
+                        <div class="url-upload-section">
+                            <div class="form-group">
+                                <label for="imageUrl">Или введите URL изображения:</label>
+                                <div class="url-input-group">
+                                    <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg">
+                                    <button id="btnLoadFromUrl">Загрузить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnUpscale">Улучшить изображение</button>
+
+                    <div id="progressSection" class="hidden">
+                        <div class="status-text">Статус: <span id="statusText">Ожидание...</span></div>
+                        <div id="progressBar">
+                            <div id="progressBarFill"></div>
+                        </div>
+                        <button id="btnCancel" class="secondary">Отменить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card fade-in">
+                    <h1>Результат</h1>
+                    <div id="resultSection">
+                        <p class="status-text">Улучшенное изображение появится здесь после обработки.</p>
+                        <img id="imageResult" class="hidden">
+                    </div>
+                </div>
+                
+                <div id="historySection" class="card hidden fade-in">
+                    <div style="position: relative;">
+                        <h1>История апскейлов</h1>
+                        <button id="clearHistoryBtn" class="history-clear-btn" title="Очистить историю">&times;</button>
+                    </div>
+                    <div id="historyList" class="history-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="paramsModal" class="modal">
+            <div class="modal-content">
+                <h1>Параметры апскейла</h1>
+                <button class="modal-close">&times;</button>
+                <div id="modalParamsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 GKOZ</p>
+        <p class="disclaimer">Этот сайт является фронтенд-интерфейсом для работы с API ComfyUI и не связан с официальными разработчиками ComfyUI.<br>Все права на исходную технологию принадлежат их правообладателям.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="../script.js"></script>
+</body>
+</html>
