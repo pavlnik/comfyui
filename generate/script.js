@@ -74,9 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.apiUrl.value = savedApiUrl;
     }
     
-    // Восстановление ВСЕХ параметров
-    restoreAllParams();
-    
     // Восстановление истории из localStorage
     const savedHistory = localStorage.getItem(storageConfig.history);
     if (savedHistory) {
@@ -316,6 +313,9 @@ async function connectToServer() {
 
         // Загружаем доступные планировщики
         await fetchSchedulers();
+
+        // Восстановление ВСЕХ параметров
+        restoreAllParams();
         
         // Автоматически загружаем стандартный workflow
         currentWorkflow = await loadWorkflowTemplate('default');
@@ -1114,4 +1114,5 @@ function resetUI() {
 window.deleteHistoryItem = deleteHistoryItem;
 window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
+
 window.closeModal = closeModal;
