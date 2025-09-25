@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elements.randomSeed.addEventListener('change', function() {
         elements.seed.disabled = this.checked;
         if (this.checked) {
-            elements.seed.value = "-1";
+            elements.seed.value = "";
         }
         // Сохраняем состояние при изменении
         saveAllParams();
@@ -1116,3 +1116,4 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
