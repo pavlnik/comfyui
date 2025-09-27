@@ -364,7 +364,7 @@ async function fetchModels() {
             models = await getModelsFromDirectory();
         }
         
-        populateModelSelect();
+        await populateModelSelect();
         
     } catch (error) {
         console.error('Ошибка загрузки моделей:', error);
@@ -411,7 +411,7 @@ async function fetchSamplers() {
         console.error('Ошибка загрузки сэмплеров:', error);
         // Используем значения по умолчанию
         const defaultSamplers = ['euler', 'euler_ancestral', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpmpp_2s_ancestral', 'dpmpp_2m', 'ddim'];
-        populateSamplerSelect(defaultSamplers);
+        await populateSamplerSelect(defaultSamplers);
     }
 }
 
@@ -437,7 +437,7 @@ async function fetchSchedulers() {
         console.error('Ошибка загрузки планировщиков:', error);
         // В случае ошибки используем значения по умолчанию
         const defaultSchedulers = ['normal', 'karras', 'exponential', 'simple', 'ddim_uniform'];
-        populateSchedulerSelect(defaultSchedulers);
+        await populateSchedulerSelect(defaultSchedulers);
     }
 }
 
@@ -1116,4 +1116,5 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
