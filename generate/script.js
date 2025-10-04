@@ -562,7 +562,7 @@ async function loadWorkflowTemplate(workflowId) {
             "6": {
                 "inputs": {
                     "text": "", // Будет заменено динамически
-                    "clip": ["10", 1]
+                    "clip": ["10", 0] // ПОДКЛЮЧЕНИЕ ИСПРАВЛЕНО: к выходу CLIPSetLastLayer
                 },
                 "class_type": "CLIPTextEncode",
                 "_meta": { "title": "CLIP Text Encode (Prompt)" }
@@ -570,7 +570,7 @@ async function loadWorkflowTemplate(workflowId) {
             "7": {
                 "inputs": {
                     "text": "", // Будет заменено динамически
-                    "clip": ["10", 1]
+                    "clip": ["10", 0] // ПОДКЛЮЧЕНИЕ ИСПРАВЛЕНО: к выходу CLIPSetLastLayer
                 },
                 "class_type": "CLIPTextEncode",
                 "_meta": { "title": "CLIP Text Encode (Prompt)" }
@@ -594,7 +594,7 @@ async function loadWorkflowTemplate(workflowId) {
             "10": {
                 "inputs": {
                     "stop_at_clip_layer": -1, // Будет заменено динамически
-                    "clip": ["4", 1]
+                    "clip": ["4", 1] // ПОДКЛЮЧЕНИЕ ИСПРАВЛЕНО: к CLIP из загрузчика моделей
                 },
                 "class_type": "CLIPSetLastLayer",
                 "_meta": {
@@ -1138,6 +1138,7 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
 
