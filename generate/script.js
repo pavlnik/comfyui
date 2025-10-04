@@ -293,7 +293,7 @@ async function connectToServer() {
     elements.apiUrl.value = apiUrl;
     
     if (!API_URL) {
-        showAlert('Пожалуйста, введите адрес сервера generate.');
+        showAlert('Please enter the server address.');
         return;
     }
     
@@ -301,13 +301,13 @@ async function connectToServer() {
     localStorage.setItem(storageConfig.apiUrl, API_URL);
     
     // Показываем статус подключения
-    updateConnectionStatus('подключение...');
+    updateConnectionStatus('connecting...');
     
     try {
         // Проверяем доступность сервера
         const response = await fetch(`${API_URL}/system_stats`);
         if (!response.ok) {
-            throw new Error(`Ошибка сервера: ${response.status}`);
+            throw new Error(`Server error: ${response.status}`);
         }
         
         // Получаем информацию о сервере
@@ -330,13 +330,13 @@ async function connectToServer() {
         elements.modelSection.classList.remove('hidden');
         elements.paramsCard.classList.remove('hidden');
         
-        updateConnectionStatus('подключено');
-        showAlert('Успешное подключение к серверу', 'success');
+        updateConnectionStatus('connected');
+        showAlert('Successful connection to the server', 'success');
         
     } catch (error) {
-        console.error('Ошибка подключения:', error);
-        updateConnectionStatus('ошибка подключения');
-        showAlert(`Не удалось подключиться к серверу: ${error.message}`);
+        console.error('Connection error:', error);
+        updateConnectionStatus('connection error');
+        showAlert(`Couldn't connect to the server: ${error.message}`);
     }
 }
 
@@ -345,7 +345,7 @@ async function fetchModels() {
         // Получаем информацию о доступных нодах
         const response = await fetch(`${API_URL}/object_info`);
         if (!response.ok) {
-            throw new Error('Не удалось получить информацию о нодах');
+            throw new Error(`Couldn't get information about nodes`);
         }
         
         const objectInfo = await response.json();
@@ -373,8 +373,8 @@ async function fetchModels() {
         await populateModelSelect();
         
     } catch (error) {
-        console.error('Ошибка загрузки моделей:', error);
-        showAlert('Не удалось загрузить список моделей. Некоторые функции могут быть недоступны.', 'warning');
+        console.error('Model loading error:', error);
+        showAlert('The list of models could not be loaded. Some functions may not be available.', 'warning');
     }
 }
 
@@ -390,7 +390,7 @@ async function getModelsFromDirectory() {
             return [];
         }
     } catch (error) {
-        console.error('Ошибка получения моделей из директории:', error);
+        console.error('Error getting models from the directory:', error);
         return [];
     }
 }
@@ -414,7 +414,7 @@ async function fetchSamplers() {
             }
         }
     } catch (error) {
-        console.error('Ошибка загрузки сэмплеров:', error);
+        console.error('Error loading samplers:', error);
         // Используем значения по умолчанию
         const defaultSamplers = ['euler', 'euler_ancestral', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpmpp_2s_ancestral', 'dpmpp_2m', 'ddim'];
         await populateSamplerSelect(defaultSamplers);
@@ -440,7 +440,7 @@ async function fetchSchedulers() {
             }
         }
     } catch (error) {
-        console.error('Ошибка загрузки планировщиков:', error);
+        console.error('Error loading schedulers:', error);
         // В случае ошибки используем значения по умолчанию
         const defaultSchedulers = ['normal', 'karras', 'exponential', 'simple', 'ddim_uniform'];
         await populateSchedulerSelect(defaultSchedulers);
@@ -455,7 +455,7 @@ function populateModelSelect() {
         option.value = '';
         option.textContent = 'Модели не найдены';
         elements.modelSelect.appendChild(option);
-        showAlert('Модели не найдены. Убедитесь, что модели загружены в правильные папки generate.', 'warning');
+        showAlert('No generation models were found. Make sure that the models are uploaded to the correct ComfyUI folders.', 'warning');
         return;
     }
     
@@ -628,7 +628,7 @@ function setupWebSocket() {
             // Таймаут для подключения
             const timeout = setTimeout(() => {
                 if (ws.readyState !== WebSocket.OPEN) {
-                    reject(new Error('Таймаут подключения WebSocket'));
+                    reject(new Error('WebSocket Connection Timeout'));
                     ws.close();
                 }
             }, 5000);
@@ -654,7 +654,7 @@ function setupWebSocket() {
                 clearTimeout(timeout);
                 console.log('WebSocket disconnected', event.code, event.reason);
                 if (isGenerating) {
-                    showAlert('Соединение прервано. Генерация остановлена.', 'error');
+                    showAlert('The connection is terminated. Generation has been stopped.', 'error');
                     resetUI();
                 }
             };
@@ -669,19 +669,19 @@ function handleWebSocketMessage(message) {
     
     switch (message.type) {
         case 'execution_start':
-            elements.statusText.textContent = `Начало выполнения...`;
+            elements.statusText.textContent = `Start execution...`;
             break;
             
         case 'execution_cached':
-            elements.statusText.textContent = `Кэшировано: ${message.data.nodes.join(', ')}`;
+            elements.statusText.textContent = `Cached: ${message.data.nodes.join(', ')}`;
             break;
             
         case 'executing':
             currentNodeId = message.data.node;
             if (currentNodeId) {
-                elements.statusText.textContent = `Выполняется узел: ${currentNodeId}`;
+                elements.statusText.textContent = `The node is in progress: ${currentNodeId}`;
             } else {
-                elements.statusText.textContent = `Выполнение завершено`;
+                elements.statusText.textContent = `Execution completed`;
                 // Если node is null, значит выполнение завершено
                 // Но не вызываем fetchHistory здесь, ждем 'executed'
             }
@@ -690,45 +690,26 @@ function handleWebSocketMessage(message) {
         case 'progress':
             const progress = message.data.value / message.data.max * 100;
             elements.progressBarFill.style.width = `${progress}%`;
-            elements.statusText.textContent = `Прогресс: ${Math.round(progress)}% (Шаг ${message.data.value} из ${message.data.max})`;
+            elements.statusText.textContent = `Progress: ${Math.round(progress)}% (Шаг ${message.data.value} из ${message.data.max})`;
             break;
             
         case 'executed':
             if (message.data.node === currentNodeId && !historyAdded) {
-                elements.statusText.textContent = 'Генерация завершена!';
+                elements.statusText.textContent = 'Generation complete!';
                 fetchHistory(message.data.prompt_id);
             }
             break;
             
         case 'execution_error':
-            showAlert(`Ошибка выполнения: ${message.data.exception_message}`);
+            showAlert(`Execution error: ${message.data.exception_message}`);
             resetUI();
             break;
     }
 }
 
-function checkWebSocketState() {
-    if (!ws) {
-        return "Не инициализирован";
-    }
-    
-    switch (ws.readyState) {
-        case WebSocket.CONNECTING:
-            return "Подключается";
-        case WebSocket.OPEN:
-            return "Открыт";
-        case WebSocket.CLOSING:
-            return "Закрывается";
-        case WebSocket.CLOSED:
-            return "Закрыт";
-        default:
-            return "Неизвестное состояние";
-    }
-}
-
 async function generateImage() {
     if (isGenerating) {
-        showAlert('Генерация уже выполняется. Дождитесь завершения.');
+        showAlert('The generation is already in progress. Wait for it to finish.');
         return;
     }
     
@@ -737,7 +718,7 @@ async function generateImage() {
     
     const positivePrompt = elements.positivePrompt.value;
     if (!positivePrompt) {
-        showAlert('Пожалуйста, введите позитивный промт.');
+        showAlert('Please enter a positive promt.');
         return;
     }
     
@@ -758,7 +739,7 @@ async function generateImage() {
         await new Promise(resolve => setTimeout(resolve, 100));
         
         if (!ws || ws.readyState !== WebSocket.OPEN) {
-            throw new Error('WebSocket соединение не установлено');
+            throw new Error('WebSocket connection is not established');
         }
         
         // Подготавливаем промпт
@@ -778,7 +759,7 @@ async function generateImage() {
         
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Ошибка API: ${response.status} ${response.statusText}. ${errorText}`);
+            throw new Error(`API error: ${response.status} ${response.statusText}. ${errorText}`);
         }
         
         const responseData = await response.json();
@@ -786,8 +767,8 @@ async function generateImage() {
         console.log("Prompt queued:", responseData);
         
     } catch (error) {
-        console.error('Ошибка генерации:', error);
-        showAlert(`Ошибка при запуске генерации: ${error.message}`);
+        console.error('Generation error:', error);
+        showAlert(`Error when starting generation: ${error.message}`);
         resetUI();
     }
 }
@@ -889,8 +870,8 @@ async function fetchHistory(promptId) {
             }
         }
     } catch (error) {
-        console.error('Ошибка загрузки истории:', error);
-        showAlert('Изображение сгенерировано, но произошла ошибка при его загрузке.');
+        console.error('History upload error:', error);
+        showAlert('The image was generated, but an error occurred when uploading it.');
         resetUI();
     }
 }
@@ -960,7 +941,7 @@ function renderHistory() {
 // Функция удаления элемента из истории
 function deleteHistoryItem(event, index) {
     event.stopPropagation(); // Предотвращаем открытие изображения
-    if (confirm('Удалить это изображение из истории?')) {
+    if (confirm('Delete this image from the history?')) {
         history.splice(index, 1);
         localStorage.setItem(storageConfig.history, JSON.stringify(history));
         
@@ -973,7 +954,7 @@ function deleteHistoryItem(event, index) {
 }
 
 function clearHistory() {
-    if (confirm('Вы уверены, что хотите полностью очистить историю?')) {
+    if (confirm('Are you sure you want to completely clear the history?')) {
         history = [];
         localStorage.removeItem(storageConfig.history);
         elements.historySection.classList.add('hidden');
@@ -997,8 +978,8 @@ function showHistoryParams(event, index) {
     if (item.params) {
         // Специальная обработка для промтов
         const specialParams = {
-            positivePrompt: 'Позитивный промт',
-            negativePrompt: 'Негативный промт'
+            positivePrompt: 'Positive promt',
+            negativePrompt: 'Negative promt'
         };
         
         // Сначала выводим обычные параметры
@@ -1009,14 +990,16 @@ function showHistoryParams(event, index) {
             
             // Форматируем ключи для лучшего отображения
             const keyNames = {
-                width: 'Ширина',
-                height: 'Высота',
-                steps: 'Шаги',
+                width: 'Width',
+                height: 'Height',
+                steps: 'Steps',
                 cfg: 'CFG Scale',
-                sampler: 'Сэмплер',
-                scheduler: 'Планировщик',
-                seed: 'Сид',
-                model: 'Модель'
+                clipSkip: 'Clip Skip',
+                denoise: 'Denoise',
+                sampler: 'Sampler',
+                scheduler: 'Scheduler',
+                seed: 'Seed',
+                model: 'Model'
             };
             
             const displayKey = keyNames[key] || key;
@@ -1041,7 +1024,7 @@ function showHistoryParams(event, index) {
             }
         }
     } else {
-        html = '<p>Параметры генерации для этого изображения не сохранены.</p>';
+        html = '<p>The generation parameters for this image are not saved.</p>';
     }
     
     content.innerHTML = html;
@@ -1061,7 +1044,7 @@ function copyPrompt(text, title) {
         document.execCommand('copy');
         
         // Показываем уведомление
-        showAlert(`${title} скопирован в буфер обмена!`, 'success');
+        showAlert(`${title} copied to the clipboard!`, 'success');
         
         // Визуальная обратная связь
         const prompts = document.querySelectorAll('.copyable-prompt');
@@ -1072,8 +1055,8 @@ function copyPrompt(text, title) {
             }
         });
     } catch (err) {
-        console.error('Ошибка при копировании текста: ', err);
-        showAlert('Не удалось скопировать промт', 'error');
+        console.error('Error when copying text:', err);
+        showAlert(`Couldn't copy promt`, 'error');
     }
     
     // Удаляем временный элемент
@@ -1098,14 +1081,14 @@ function cancelGeneration() {
         fetch(`${API_URL}/interrupt`, { method: 'POST' })
             .then(response => {
                 if (response.ok) {
-                    showAlert('Генерация отменена', 'warning');
+                    showAlert('Generation canceled', 'warning');
                 } else {
-                    showAlert('Не удалось отменить генерацию', 'error');
+                    showAlert(`Couldn't cancel generation`, 'error');
                 }
             })
             .catch(error => {
-                console.error('Ошибка отмены генерации:', error);
-                showAlert('Ошибка при отмене генерации', 'error');
+                console.error('Generation cancellation error:', error);
+                showAlert('Error when canceling generation', 'error');
             })
             .finally(() => {
                 resetUI();
@@ -1123,7 +1106,7 @@ function resetUI() {
     
     elements.btnGenerate.disabled = false;
     elements.progressSection.classList.add('hidden');
-    elements.statusText.textContent = "Ожидание...";
+    elements.statusText.textContent = "Expectation...";
     elements.progressBarFill.style.width = '0%';
     
     if (ws) {
@@ -1138,6 +1121,7 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
 
