@@ -305,14 +305,12 @@ async function connectToServer() {
         // Получаем информацию о сервере
         const serverInfo = await fetch(`${API_URL}/system_stats`).then(r => r.json());
         
-        // Загружаем доступные модели
-        await fetchModels();
-        
-        // Загружаем доступные сэмплеры
-        await fetchSamplers();
-
-        // Загружаем доступные планировщики
-        await fetchSchedulers();
+        // Дождаться завершения всех загрузок
+        await Promise.all([
+            fetchModels(),
+            fetchSamplers(), 
+            fetchSchedulers()
+        ]);
 
         // Восстановление ВСЕХ параметров
         restoreAllParams();
@@ -1116,5 +1114,6 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
