@@ -567,16 +567,6 @@ async function loadWorkflowTemplate(workflowId) {
                 "class_type": "CLIPTextEncode",
                 "_meta": { "title": "CLIP Text Encode (Prompt)" }
             },
-            "10": {
-                "inputs": {
-                    "stop_at_clip_layer": -1, // Будет заменено динамически
-                    "clip": ["4", 1]
-                },
-                "class_type": "CLIPSetLastLayer",
-                "_meta": {
-                    "title": "CLIP Set Last Layer"
-                }
-            },
             "7": {
                 "inputs": {
                     "text": "", // Будет заменено динамически
@@ -600,6 +590,16 @@ async function loadWorkflowTemplate(workflowId) {
                 },
                 "class_type": "SaveImage",
                 "_meta": { "title": "Save Image" }
+            },
+            "10": {
+                "inputs": {
+                    "stop_at_clip_layer": -1, // Будет заменено динамически
+                    "clip": ["4", 1]
+                },
+                "class_type": "CLIPSetLastLayer",
+                "_meta": {
+                    "title": "CLIP Set Last Layer"
+                }
             }
         }
     };
@@ -1138,6 +1138,7 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
 
