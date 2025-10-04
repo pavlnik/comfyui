@@ -212,7 +212,7 @@ function handleImageUpload(e) {
 }
 
 function updateConnectionStatus(status, type = 'info') {
-    elements.connectionStatus.textContent = `Статус: ${status}`;
+    elements.connectionStatus.textContent = `Status: ${status}`;
     elements.connectionStatus.classList.remove('alert-error', 'alert-success', 'alert-warning', 'alert-info');
     
     if (type !== 'info') {
@@ -795,3 +795,4 @@ window.deleteHistoryItem = deleteHistoryItem;
 window.showHistoryParams = showHistoryParams;
 
 window.closeModal = closeModal;
+
