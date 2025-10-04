@@ -267,7 +267,7 @@ function showAlert(message, type = 'error') {
 }
 
 function updateConnectionStatus(status, type = 'info') {
-    elements.connectionStatus.textContent = `Статус: ${status}`;
+    elements.connectionStatus.textContent = `Status: ${status}`;
     
     // Убираем все классы alert-*
     elements.connectionStatus.classList.remove('alert-error', 'alert-success', 'alert-warning', 'alert-info');
@@ -1121,6 +1121,7 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
 
