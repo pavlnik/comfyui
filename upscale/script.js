@@ -135,24 +135,24 @@ async function loadImageFromUrl() {
     
     try {
         elements.btnLoadFromUrl.disabled = true;
-        elements.btnLoadFromUrl.textContent = 'Загрузка...';
+        elements.btnLoadFromUrl.textContent = 'Loading...';
         
         // Проверяем, является ли URL действительным
         if (!isValidUrl(imageUrl)) {
-            throw new Error('Некорректный URL. Убедитесь, что он начинается с http:// или https://');
+            throw new Error('Invalid URL. Make sure it starts with http:// or https://');
         }
         
         // Загружаем изображение
         const response = await fetch(imageUrl);
         if (!response.ok) {
-            throw new Error(`Ошибка загрузки изображения: ${response.status} ${response.statusText}`);
+            throw new Error(`Image upload error: ${response.status} ${response.statusText}`);
         }
         
         const blob = await response.blob();
         
         // Проверяем, что это изображение
         if (!blob.type.startsWith('image/')) {
-            throw new Error('Указанный URL не ведет к изображению');
+            throw new Error('The specified URL does not lead to the image');
         }
         
         // Создаем файл из blob
@@ -169,15 +169,15 @@ async function loadImageFromUrl() {
         };
         reader.readAsDataURL(file);
         
-        showAlert('Изображение успешно загружено по URL', 'success');
+        showAlert('The image was successfully uploaded via URL', 'success');
         elements.imageUrl.value = '';
         
     } catch (error) {
-        console.error('Ошибка загрузки изображения по URL:', error);
-        showAlert(`Ошибка загрузки изображения: ${error.message}`);
+        console.error('Error loading image from URL:', error);
+        showAlert(`Image upload error: ${error.message}`);
     } finally {
         elements.btnLoadFromUrl.disabled = false;
-        elements.btnLoadFromUrl.textContent = 'Загрузить';
+        elements.btnLoadFromUrl.textContent = 'Upload';
     }
 }
 
@@ -197,7 +197,7 @@ function handleImageUpload(e) {
     if (!file) return;
     
     if (!file.type.match('image.*')) {
-        showAlert('Пожалуйста, выберите файл изображения.');
+        showAlert('Please select the image file.');
         return;
     }
     
@@ -232,7 +232,7 @@ function handleImageUpload(e) {
     if (!file) return;
     
     if (!file.type.match('image.*')) {
-        showAlert('Пожалуйста, выберите файл изображения.');
+        showAlert('Please select the image file.');
         return;
     }
     
@@ -259,18 +259,18 @@ async function connectToServer() {
     elements.apiUrl.value = apiUrl;
     
     if (!API_URL) {
-        showAlert('Пожалуйста, введите адрес сервера ComfyUI.');
+        showAlert('Please enter the server address.');
         return;
     }
     
     localStorage.setItem(storageConfig.apiUrl, API_URL);
     
-    updateConnectionStatus('подключение...');
+    updateConnectionStatus('connecting...');
     
     try {
         const response = await fetch(`${API_URL}/system_stats`);
         if (!response.ok) {
-            throw new Error(`Ошибка сервера: ${response.status}`);
+            throw new Error(`Server error: ${response.status}`);
         }
         
         await fetchUpscaleModels();
@@ -280,13 +280,13 @@ async function connectToServer() {
         elements.modelSection.classList.remove('hidden');
         elements.paramsCard.classList.remove('hidden');
         
-        updateConnectionStatus('подключено');
-        showAlert('Успешное подключение к серверу', 'success');
+        updateConnectionStatus('connected');
+        showAlert('Successful connection to the server', 'success');
         
     } catch (error) {
-        console.error('Ошибка подключения:', error);
-        updateConnectionStatus('ошибка подключения');
-        showAlert(`Не удалось подключиться к серверу: ${error.message}`);
+        console.error('Connection error:', error);
+        updateConnectionStatus('connection error');
+        showAlert(`Couldn't connect to the server: ${error.message}`);
     }
 }
 
@@ -294,7 +294,7 @@ async function fetchUpscaleModels() {
     try {
         const response = await fetch(`${API_URL}/object_info`);
         if (!response.ok) {
-            throw new Error('Не удалось получить информацию о нодах');
+            throw new Error(`Couldn't get information about nodes`);
         }
         
         const objectInfo = await response.json();
@@ -320,8 +320,8 @@ async function fetchUpscaleModels() {
         populateModelSelect();
         
     } catch (error) {
-        console.error('Ошибка загрузки моделей:', error);
-        showAlert('Не удалось загрузить список моделей апскейла. Некоторые функции могут быть недоступны.', 'warning');
+        console.error('Model loading error:', error);
+        showAlert('The list of models could not be loaded. Some functions may not be available.', 'warning');
     }
 }
 
@@ -334,7 +334,7 @@ async function getUpscaleModelsFromDirectory() {
             return [];
         }
     } catch (error) {
-        console.error('Ошибка получения моделей из директории:', error);
+        console.error('Error getting models from the directory:', error);
         return [];
     }
 }
@@ -347,7 +347,7 @@ function populateModelSelect() {
         option.value = '';
         option.textContent = 'Модели апскейла не найдены';
         elements.modelSelect.appendChild(option);
-        showAlert('Модели апскейла не найдены. Убедитесь, что модели загружены в правильные папки ComfyUI.', 'warning');
+        showAlert('No upscale models were found. Make sure that the models are uploaded to the correct ComfyUI folders.', 'warning');
         return;
     }
     
@@ -401,7 +401,7 @@ async function loadUpscaleWorkflowTemplate() {
 
 async function uploadImageToServer() {
     if (!uploadedImageFile) {
-        throw new Error('Нет изображения для загрузки');
+        throw new Error('There is no image to upload');
     }
     
     const formData = new FormData();
@@ -413,7 +413,7 @@ async function uploadImageToServer() {
     });
     
     if (!response.ok) {
-        throw new Error(`Ошибка загрузки изображения: ${response.status}`);
+        throw new Error(`Image upload error: ${response.status}`);
     }
     
     const data = await response.json();
@@ -439,7 +439,7 @@ function setupWebSocket() {
             
             const timeout = setTimeout(() => {
                 if (ws.readyState !== WebSocket.OPEN) {
-                    reject(new Error('Таймаут подключения WebSocket'));
+                    reject(new Error('WebSocket Connection Timeout'));
                     ws.close();
                 }
             }, 5000);
@@ -465,7 +465,7 @@ function setupWebSocket() {
                 clearTimeout(timeout);
                 console.log('WebSocket disconnected', event.code, event.reason);
                 if (isUpscaling) {
-                    showAlert('Соединение прервано. Апскейл остановлен.', 'error');
+                    showAlert('The connection is terminated. Upscale has been stopped.', 'error');
                     resetUI();
                 }
             };
@@ -480,37 +480,37 @@ function handleWebSocketMessage(message) {
     
     switch (message.type) {
         case 'execution_start':
-            elements.statusText.textContent = `Начало выполнения...`;
+            elements.statusText.textContent = `Start execution...`;
             break;
             
         case 'execution_cached':
-            elements.statusText.textContent = `Кэшировано: ${message.data.nodes.join(', ')}`;
+            elements.statusText.textContent = `Cached: ${message.data.nodes.join(', ')}`;
             break;
             
         case 'executing':
             currentNodeId = message.data.node;
             if (currentNodeId) {
-                elements.statusText.textContent = `Выполняется узел: ${currentNodeId}`;
+                elements.statusText.textContent = `The node is in progress: ${currentNodeId}`;
             } else {
-                elements.statusText.textContent = `Выполнение завершено`;
+                elements.statusText.textContent = `Execution completed`;
             }
             break;
             
         case 'progress':
             const progress = message.data.value / message.data.max * 100;
             elements.progressBarFill.style.width = `${progress}%`;
-            elements.statusText.textContent = `Прогресс: ${Math.round(progress)}% (Шаг ${message.data.value} из ${message.data.max})`;
+            elements.statusText.textContent = `Progress: ${Math.round(progress)}% (Шаг ${message.data.value} из ${message.data.max})`;
             break;
             
         case 'executed':
             if (message.data.node === currentNodeId) {
-                elements.statusText.textContent = 'Апскейл завершен!';
+                elements.statusText.textContent = 'Upscale complete!';
                 fetchHistory(message.data.prompt_id);
             }
             break;
             
         case 'execution_error':
-            showAlert(`Ошибка выполнения: ${message.data.exception_message}`);
+            showAlert(`Execution error: ${message.data.exception_message}`);
             resetUI();
             break;
     }
@@ -518,18 +518,18 @@ function handleWebSocketMessage(message) {
 
 async function upscaleImage() {
     if (isUpscaling) {
-        showAlert('Апскейл уже выполняется. Дождитесь завершения.');
+        showAlert('The upscale is already in progress. Wait for it to finish.');
         return;
     }
     
     if (!uploadedImageFile) {
-        showAlert('Пожалуйста, загрузите изображение для апскейла.');
+        showAlert('Please upload an image for the upscale.');
         return;
     }
     
     const selectedModel = elements.modelSelect.value;
     if (!selectedModel) {
-        showAlert('Пожалуйста, выберите модель для апскейла.');
+        showAlert('Please select the model for the upscale.');
         return;
     }
     
@@ -543,7 +543,7 @@ async function upscaleImage() {
     
     try {
         // Загружаем изображение на сервер
-        elements.statusText.textContent = "Загрузка изображения...";
+        elements.statusText.textContent = "Uploading an image...";
         const uploadResult = await uploadImageToServer();
         
         // Настраиваем WebSocket соединение для отслеживания прогресса
@@ -552,7 +552,7 @@ async function upscaleImage() {
         await new Promise(resolve => setTimeout(resolve, 100));
         
         if (!ws || ws.readyState !== WebSocket.OPEN) {
-            throw new Error('WebSocket соединение не установлено');
+            throw new Error('WebSocket connection is not established');
         }
         
         const prompt = constructUpscalePrompt(uploadResult.name);
@@ -570,7 +570,7 @@ async function upscaleImage() {
         
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Ошибка API: ${response.status} ${response.statusText}. ${errorText}`);
+            throw new Error(`API error: ${response.status} ${response.statusText}. ${errorText}`);
         }
         
         const responseData = await response.json();
@@ -578,8 +578,8 @@ async function upscaleImage() {
         console.log("Prompt queued:", responseData);
         
     } catch (error) {
-        console.error('Ошибка апскейла:', error);
-        showAlert(`Ошибка при запуске апскейла: ${error.message}`);
+        console.error('Upscale error:', error);
+        showAlert(`Error when starting upscale: ${error.message}`);
         resetUI();
     }
 }
@@ -635,8 +635,8 @@ async function fetchHistory(promptId) {
             }
         }
     } catch (error) {
-        console.error('Ошибка загрузки истории:', error);
-        showAlert('Изображение обработано, но произошла ошибка при его загрузке.');
+        console.error('History upload error:', error);
+        showAlert('The image was upscaled, but an error occurred when uploading it.');
         resetUI();
     }
 }
@@ -688,7 +688,7 @@ function renderHistory() {
 
 function deleteHistoryItem(event, index) {
     event.stopPropagation();
-    if (confirm('Удалить это изображение из истории?')) {
+    if (confirm('Delete this image from the history?')) {
         history.splice(index, 1);
         localStorage.setItem(storageConfig.history, JSON.stringify(history));
         
@@ -701,7 +701,7 @@ function deleteHistoryItem(event, index) {
 }
 
 function clearHistory() {
-    if (confirm('Вы уверены, что хотите полностью очистить историю?')) {
+    if (confirm('Are you sure you want to completely clear the history?')) {
         history = [];
         localStorage.removeItem(storageConfig.history);
         elements.historySection.classList.add('hidden');
@@ -721,7 +721,7 @@ function showHistoryParams(event, index) {
     
     if (item.params) {
         const keyNames = {
-            model: 'Модель'
+            model: 'Model'
         };
         
         for (const [key, value] of Object.entries(item.params)) {
@@ -735,7 +735,7 @@ function showHistoryParams(event, index) {
             `;
         }
     } else {
-        html = '<p>Параметры апскейла для этого изображения не сохранены.</p>';
+        html = '<p>The upscale parameters for this image are not saved.</p>';
     }
     
     content.innerHTML = html;
@@ -757,14 +757,14 @@ function cancelUpscaling() {
         fetch(`${API_URL}/interrupt`, { method: 'POST' })
             .then(response => {
                 if (response.ok) {
-                    showAlert('Апскейл отменен', 'warning');
+                    showAlert('Upscale canceled', 'warning');
                 } else {
-                    showAlert('Не удалось отменить апскейл', 'error');
+                    showAlert(`Couldn't cancel upscale`, 'error');
                 }
             })
             .catch(error => {
-                console.error('Ошибка отмены апскейла:', error);
-                showAlert('Ошибка при отмене апскейла', 'error');
+                console.error('Upscale cancellation error:', error);
+                showAlert('Error when canceling upscale', 'error');
             })
             .finally(() => {
                 resetUI();
@@ -781,7 +781,7 @@ function resetUI() {
     
     elements.btnUpscale.disabled = false;
     elements.progressSection.classList.add('hidden');
-    elements.statusText.textContent = "Ожидание...";
+    elements.statusText.textContent = "Expectation...";
     elements.progressBarFill.style.width = '0%';
     
     if (ws) {
@@ -793,4 +793,5 @@ function resetUI() {
 
 window.deleteHistoryItem = deleteHistoryItem;
 window.showHistoryParams = showHistoryParams;
+
 window.closeModal = closeModal;
