@@ -37,14 +37,22 @@ A web interface for working with the ComfyUI API, providing a convenient visual 
 - Access to a running ComfyUI API instance
 - Internet connection for API communication
 
-## Disclaimer
-
-This website is a frontend interface for working with the ComfyUI API and is not affiliated with the official ComfyUI developers. All rights to the underlying technology belong to their respective owners.
-
-## License
-
-This project is open source. Please refer to the original ComfyUI project for their licensing terms.
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues and pull requests to improve this web interface.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+### License Summary
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version [web:1][web:5].
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details [web:1][web:2].
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/> [web:1].
+
+## Disclaimer
+
+**This website is a frontend interface for working with the ComfyUI API and is not affiliated with the official ComfyUI developers. All rights to the underlying technology belong to their respective owners.**
