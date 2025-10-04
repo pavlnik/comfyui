@@ -26,6 +26,8 @@ const elements = {
     height: document.getElementById('height'),
     steps: document.getElementById('steps'),
     cfg: document.getElementById('cfg'),
+    clipSkip: document.getElementById('clipSkip'),
+    denoise: document.getElementById('denoise'),
     samplerSelect: document.getElementById('samplerSelect'),
     schedulerSelect: document.getElementById('schedulerSelect'),
     randomSeed: document.getElementById('randomSeed'),
@@ -53,6 +55,8 @@ const storageConfig = {
     height: 'generate_height',
     steps: 'generate_steps',
     cfg: 'generate_cfg',
+    clipSkip: 'generate_clipSkip',
+    denoise: 'generate_denoise',
     sampler: 'generate_sampler',
     scheduler: 'generate_scheduler',
     seed: 'generate_seed',
@@ -101,7 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const paramElements = [
         elements.positivePrompt, elements.negativePrompt, 
         elements.width, elements.height, elements.steps, 
-        elements.cfg, elements.samplerSelect, elements.schedulerSelect, 
+        elements.cfg, elements.clipSkip, elements.denoise, 
+        elements.samplerSelect, elements.schedulerSelect, 
         elements.seed, elements.modelSelect
     ];
     
@@ -133,6 +138,8 @@ function saveAllParams() {
         [storageConfig.height]: elements.height.value,
         [storageConfig.steps]: elements.steps.value,
         [storageConfig.cfg]: elements.cfg.value,
+        [storageConfig.clipSkip]: elements.clipSkip.value,
+        [storageConfig.denoise]: elements.denoise.value,
         [storageConfig.sampler]: elements.samplerSelect.value,
         [storageConfig.scheduler]: elements.schedulerSelect.value,
         [storageConfig.seed]: elements.seed.value,
@@ -157,7 +164,8 @@ function restoreAllParams() {
     const textParams = [
         storageConfig.positivePrompt, storageConfig.negativePrompt,
         storageConfig.width, storageConfig.height, storageConfig.steps,
-        storageConfig.cfg, storageConfig.seed
+        storageConfig.cfg, storageConfig.clipSkip, storageConfig.denoise, 
+        storageConfig.seed
     ];
     
     textParams.forEach(key => {
@@ -526,7 +534,7 @@ async function loadWorkflowTemplate(workflowId) {
                     "cfg": 8, // Будет заменено динамически
                     "sampler_name": "euler",
                     "scheduler": "normal",
-                    "denoise": 1,
+                    "denoise": 1, // Будет заменено динамически
                     "model": ["4", 0],
                     "positive": ["6", 0],
                     "negative": ["7", 0],
@@ -554,7 +562,7 @@ async function loadWorkflowTemplate(workflowId) {
             "6": {
                 "inputs": {
                     "text": "", // Будет заменено динамически
-                    "clip": ["4", 1]
+                    "clip": ["10", 1]
                 },
                 "class_type": "CLIPTextEncode",
                 "_meta": { "title": "CLIP Text Encode (Prompt)" }
@@ -562,7 +570,7 @@ async function loadWorkflowTemplate(workflowId) {
             "7": {
                 "inputs": {
                     "text": "", // Будет заменено динамически
-                    "clip": ["4", 1]
+                    "clip": ["10", 1]
                 },
                 "class_type": "CLIPTextEncode",
                 "_meta": { "title": "CLIP Text Encode (Prompt)" }
@@ -582,6 +590,16 @@ async function loadWorkflowTemplate(workflowId) {
                 },
                 "class_type": "SaveImage",
                 "_meta": { "title": "Save Image" }
+            },
+            "10": {
+                "inputs": {
+                    "stop_at_clip_layer": -1, // Будет заменено динамически
+                    "clip": ["4", 1]
+                },
+                "class_type": "CLIPSetLastLayer",
+                "_meta": {
+                    "title": "CLIP Set Last Layer"
+                }
             }
         }
     };
@@ -783,6 +801,8 @@ function constructPrompt() {
     const height = parseInt(elements.height.value);
     const steps = parseInt(elements.steps.value);
     const cfg = parseFloat(elements.cfg.value);
+    const clipSkip = parseInt(elements.clipSkip.value);
+    const denoise = parseFloat(elements.denoise.value);
     const sampler = elements.samplerSelect.value;
     const scheduler = elements.schedulerSelect.value;
     const useRandomSeed = elements.randomSeed.checked;
@@ -819,6 +839,8 @@ function constructPrompt() {
     promptData["6"]["inputs"]["text"] = positivePrompt;
     promptData["7"]["inputs"]["text"] = negativePrompt;
     promptData["9"]["inputs"]["filename_prefix"] = filenamePrefix;
+    promptData["10"]["inputs"]["stop_at_clip_layer"] = -clipSkip;
+    promptData["3"]["inputs"]["denoise"] = denoise;
     
     return promptData;
 }
@@ -882,6 +904,8 @@ function addToHistory(imageUrl, promptId, promptHistory) {
         height: parseInt(elements.height.value),
         steps: parseInt(elements.steps.value),
         cfg: parseFloat(elements.cfg.value),
+        clipSkip: elements.clipSkip.value,
+        denoise: elements.denoise.value,
         sampler: elements.samplerSelect.value,
         scheduler: elements.schedulerSelect.value,
         seed: elements.seed.value, // Сохраняем фактический сид
@@ -1114,6 +1138,7 @@ window.showHistoryParams = showHistoryParams;
 window.copyPrompt = copyPrompt;
 
 window.closeModal = closeModal;
+
 
 
 
