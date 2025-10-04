@@ -1,26 +1,50 @@
 # ComfyUI Web Interface
 
-Веб-интерфейс для работы с ComfyUI API, предоставляющий удобный визуальный фронтенд для генерации и улучшения изображений.
+A web interface for working with the ComfyUI API, providing a convenient visual frontend for image generation and enhancement.
 
-## 🌐 Демо
+## Demo
 
-**Рабочая версия сайта доступна по ссылке (для работы требуется доступ к API):**  
-https://pavlnik.github.io/comfyui/
+**Working version of the website is available at the following link (requires API access to function):**  
+[https://pavlnik.github.io/comfyui/](https://pavlnik.github.io/comfyui/)
 
-## 🌟 Особенности
+## Features
 
-- **Интуитивный интерфейс** - простая навигация между разделами
-- **Генерация изображений** - создание уникальных изображений с помощью ИИ
-- **Улучшение качества** - апскейл изображений без потери детализации
-- **Адаптивный дизайн** - корректное отображение на различных устройствах
+- **Intuitive Interface** - Easy navigation between sections
+- **Image Generation** - Create unique AI-generated images
+- **Quality Enhancement** - Upscale images without losing detail
+- **Responsive Design** - Proper display across various devices
+- **Modern UI/UX** - Clean and user-friendly interface design
+- **Real-time Processing** - Live status updates during image generation
 
-## 🔧 Технические особенности
+## Technical Features
 
-- Чистый HTML5 и CSS3
-- Адаптивная верстка для мобильных устройств
-- Встроенные иконки в формате base64
-- Совместимость с современными браузерами
+- Pure HTML5 and CSS3 implementation
+- Mobile-responsive layout
+- Base64 embedded icons for faster loading
+- Modern browser compatibility
+- Lightweight and fast performance
 
-## ⚠️ Предупреждение
+## Getting Started
 
-**Этот сайт является фронтенд-интерфейсом для работы с API ComfyUI и не связан с официальными разработчиками ComfyUI. Все права на исходную технологию принадлежат их правообладателям.**
+1. Clone this repository
+2. Open `index.html` in your web browser
+3. Configure your ComfyUI API endpoint
+4. Start generating and enhancing images!
+
+## Requirements
+
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Access to a running ComfyUI API instance
+- Internet connection for API communication
+
+## Disclaimer
+
+This website is a frontend interface for working with the ComfyUI API and is not affiliated with the official ComfyUI developers. All rights to the underlying technology belong to their respective owners.
+
+## License
+
+This project is open source. Please refer to the original ComfyUI project for their licensing terms.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests to improve this web interface.
